@@ -1,0 +1,14 @@
+github:
+  prebuilds:
+    master: true
+    branches: false
+    pullRequests: true
+    pullRequestsFromForks: false
+    addCheck: true
+    addComment: false
+    addBadge: false
+
+vscode:
+  extensions:
+    - EditorConfig.EditorConfig
+    - ms-kubernetes-tools.vscode-kubernetes-tools
