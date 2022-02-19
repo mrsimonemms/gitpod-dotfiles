@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+
+# A collection of scripts I find useful when developing
+# Gitpod
+
+set -euo pipefail
+
+# Generic confirmation command
+function _confirm() {
+  while true; do
+    read -p "${1}? [y/N] " yn
+    case "${yn}" in
+      [Yy]* ) break;;
+      * ) exit;;
+    esac
+  done
+}
+
+# Generate help text for commands
+function _help() {
+  text="${1}"
+  args="${@:2}"
+
+  if [[ "${@}" =~ (--help|-h)(\b|$) ]]; then
+    echo "${text}"
+    exit
+  fi
+}
+
+##########
+# Public commands
+##########
+
+function download_versions() {
+  help=$(cat << EOF
+Downloads Installer version.yaml file from werft
+
+Usage:
+  download_versions [werft tag]
+
+Flags:
+  -h, --help       Display help
+EOF
+)
+  _help "${help}" "${@}"
+
+  version="${1:-}"
+
+  if [ -z $version ]; then
+    echo "Version argument is required"
+    exit 1
+  fi
+  docker run -it --rm "eu.gcr.io/gitpod-core-dev/build/versions:${version}" cat versions.yaml > versions.yaml
+}
+
+function render() {
+  help=$(cat << EOF
+Renders a Self-Hosted installation to your cluster.
+
+Default namespace is "default" and default config is
+"./example-config.yaml". Pipe to "kubectl apply -f -"
+to install this to your cluster.
+
+NB. This uses "go run" not "gitpod-installer"
+
+Usage:
+  render <namespace> <config>
+
+Flags:
+  -h, --help       Display help
+EOF
+)
+  _help "${help}" "${@}"
+
+  namespace=${1:-default}
+  config=${2:-example-config.yaml}
+
+  if [ ! -f "${config}" ]; then
+    echo "Config file ${config} does not exist"
+    exit 1
+  fi
+
+  if [ ! -f "versions.yaml" ]; then
+    echo "versions.yaml file does not exist - please run gitpod-dev download_versions"
+    exit 1
+  fi
+
+  go run . render apply --debug-version-file versions.yaml --config "${config}" --namespace "${namespace}"
+}
+
+function uninstall() {
+  help=$(cat << EOF
+Uninstalls a Self-Hosted installation from your cluster
+
+Default namespace is "default".
+
+Usage:
+  uninstall <namespace>
+
+Flags:
+  -h, --help       Display help
+EOF
+)
+  _help "${help}" "${@}"
+
+  namespace=${1:-default}
+
+  _confirm "Do you wish to uninstall from ${namespace} namespace"
+
+  kubectl get configmaps gitpod-app -o jsonpath='{.data.app\.yaml}' -n "${namespace}" | kubectl delete -f -
+}
+
+function main() {
+  case "${1}" in
+    download_versions) download_versions ${@:2};;
+    render) render ${@:2};;
+    uninstall) uninstall ${@:2};;
+    *)
+      cat << EOF
+A series of useful commands for developing Gitpod.
+
+Usage:
+  gitpod-dev [command]
+
+Available commands:
+  download_versions   Downloads Installer version.yaml file from werft
+  render              Renders a Self-Hosted installation to your cluster
+  uninstall           Uninstalls a Self-Hosted installation from your cluster
+
+Flags:
+  -h, --help        Display help
+EOF
+    ;;
+  esac
+}
+
+main "${@:-""}"
