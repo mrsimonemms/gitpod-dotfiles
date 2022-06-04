@@ -1,1 +1,1 @@
-export PATH=$PATH:/home/gitpod/bin
+export PATH=$PATH:/home/gitpod/.dotfiles/bin
