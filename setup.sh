@@ -11,7 +11,7 @@ function bash_alias() {
 function kubeconfig() {
   echo "Looking for a KUBECONFIG_BASE64 envvar"
 
-  if [ -n "${KUBECONFIG_BASE64}" ]; then
+  if [ -n "${KUBECONFIG_BASE64-}" ]; then
     echo "KUBECONFIG_BASE64 envvar found"
 
     mkdir -p "${HOME}/.kube"
