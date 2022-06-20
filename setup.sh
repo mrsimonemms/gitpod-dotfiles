@@ -16,7 +16,7 @@ function kubeconfig() {
 
     mkdir -p "${HOME}/.kube"
     echo "${KUBECONFIG_BASE64}" | base64 -d > "${HOME}/.kube/config"
-    chmod 400 "${HOME}/.kube/config"
+    chmod 600 "${HOME}/.kube/config"
   fi
 }
 
