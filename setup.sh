@@ -14,9 +14,12 @@ function kubeconfig() {
   if [ -n "${KUBECONFIG_BASE64-}" ]; then
     echo "KUBECONFIG_BASE64 envvar found"
 
+    KUBECONFIG="${HOME}/.kube/config"
+
     mkdir -p "${HOME}/.kube"
-    echo "${KUBECONFIG_BASE64}" | base64 -d > "${HOME}/.kube/config"
-    chmod 600 "${HOME}/.kube/config"
+    mv -f "${KUBECONFIG}" "${HOME}/.kube/config.orig" || true # Save the old kubeconfig
+    echo "${KUBECONFIG_BASE64}" | base64 -d > "${KUBECONFIG}"
+    chmod 600 "${KUBECONFIG}"
   fi
 }
 
