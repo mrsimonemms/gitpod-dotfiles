@@ -23,5 +23,14 @@ function kubeconfig() {
   fi
 }
 
+function ohmyzsh() {
+  echo "Installing Oh My ZSH!"
+
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+  cp "${HOME}/.dotfiles/oh-my-zsh/zshrc" "${HOME}/.zshrc"
+}
+
 kubeconfig
+ohmyzsh
 bash_alias
