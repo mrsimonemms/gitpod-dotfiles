@@ -85,7 +85,7 @@ EOF
     exit 1
   fi
 
-  go run . render apply --debug-version-file versions.yaml --config "${config}" --namespace "${namespace}"
+  go run . render apply --debug-version-file versions.yaml --config "${config}" --namespace "${namespace}" "${*:3}"
 }
 
 function uninstall() {
