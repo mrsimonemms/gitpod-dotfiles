@@ -23,5 +23,26 @@ function kubeconfig() {
   fi
 }
 
+function ssh_key() {
+  echo "Looking for a SSH_PRIVATE_KEY_BASE64 envvar"
+
+  mkdir -p "${HOME}/.ssh"
+
+  if [ -n "${SSH_PRIVATE_KEY_BASE64-}" ]; then
+    echo "SSH_PRIVATE_KEY_BASE64 envvar found"
+
+    echo "${SSH_PRIVATE_KEY_BASE64}" | base64 -d > "${HOME}/.ssh/id_rsa"
+    chmod 600 "${HOME}/.ssh/id_rsa"
+  fi
+
+  if [ -n "${SSH_PUBLIC_KEY_BASE64-}" ]; then
+    echo "SSH_PUBLIC_KEY_BASE64 envvar found"
+
+    echo "${SSH_PUBLIC_KEY_BASE64}" | base64 -d > "${HOME}/.ssh/id_rsa.pub"
+    chmod 600 "${HOME}/.ssh/id_rsa.pub"
+  fi
+}
+
 kubeconfig
 bash_alias
+ssh_key
