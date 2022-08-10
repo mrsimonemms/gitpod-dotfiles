@@ -51,6 +51,30 @@ function ssh_key() {
   fi
 }
 
+function starship() {
+  function install_starship() {
+    echo "Installing Starship"
+
+    # Execute in /tmp as creates a pointless file
+    (cd /tmp && brew install starship)
+
+    BASHRC='eval "$(starship init bash)"'
+    if ! cat "${HOME}/.bashrc" | grep "${BASHRC}"; then
+      echo "${BASHRC}" >> "${HOME}/.bashrc"
+    fi
+
+    PRESET="pure-preset"
+
+    mkdir -p "${HOME}/.config"
+    wget "https://starship.rs/presets/toml/${PRESET}.toml" -O "${HOME}/.config/starship.toml"
+  }
+
+  if ! install_starship; then
+    echo "Problem installing Starship"
+  fi
+}
+
 kubeconfig
 bash_alias
 ssh_key
+starship
