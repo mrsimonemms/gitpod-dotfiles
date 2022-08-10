@@ -54,4 +54,3 @@ function ssh_key() {
 kubeconfig
 bash_alias
 ssh_key
-ohmyzsh
