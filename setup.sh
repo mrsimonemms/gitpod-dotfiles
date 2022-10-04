@@ -8,6 +8,26 @@ function bash_alias() {
   cp "${HOME}/.dotfiles/.bash_aliases" "${HOME}/.bash_aliases"
 }
 
+function git_setup() {
+  echo "Setting up Git"
+
+  echo "Git: Configuring aliases"
+  git config --global alias.cp cherry-pick
+  git config --global alias.co checkout
+  git config --global alias.ci commit
+  git config --global alias.st status
+
+  echo "Git: Use rebase to pull"
+  git config --global pull.rebase true
+
+  # @link https://github.com/so-fancy/diff-so-fancy
+  # This may legitimately fail
+  echo "Git: Installing Diff So Fancy"
+  npm install -g diff-so-fancy
+  git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
+  git config --global interactive.diffFilter "diff-so-fancy --patch"
+}
+
 function kubeconfig() {
   echo "Looking for a KUBECONFIG_BASE64 envvar"
 
@@ -46,3 +66,4 @@ function ssh_key() {
 kubeconfig
 bash_alias
 ssh_key
+git_setup || echo "Failed to do the Git setup"
