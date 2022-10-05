@@ -20,6 +20,14 @@ function git_setup() {
   echo "Git: Use rebase to pull"
   git config --global pull.rebase true
 
+  if [ -n "${GPG_PRIVATE_KEY_BASE64-}" ]; then
+    echo "Git: Installing GPG key"
+    gpg --verbose --batch --import <(echo "${GPG_PRIVATE_KEY_BASE64}" | base64 -d)
+    echo 'pinentry-mode loopback' >> ~/.gnupg/gpg.conf
+    git config --global user.signingkey "${GPG_SIGNING_KEY}"
+    git config --global commit.gpgsign true
+  fi
+
   # @link https://github.com/so-fancy/diff-so-fancy
   # This may legitimately fail
   echo "Git: Installing Diff So Fancy"
