@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Delete local and remote tags
+
+tag="$1"
+
+git tag -d "${tag}" || echo "Local tag '${tag}' not deleted"
+git push origin ":refs/tags/${tag}"
