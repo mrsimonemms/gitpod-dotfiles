@@ -48,6 +48,7 @@ function kubeconfig() {
     mv -f "${KUBECONFIG}" "${HOME}/.kube/config.orig" || true # Save the old kubeconfig
     echo "${KUBECONFIG_BASE64}" | base64 -d > "${KUBECONFIG}"
     chmod 600 "${KUBECONFIG}"
+    echo "KUBECONFIG_BASE64 successfully converted into Kubernetes config"
   fi
 }
 
@@ -71,7 +72,7 @@ function ssh_key() {
   fi
 }
 
-kubeconfig
-bash_alias
-ssh_key
-git_setup || echo "Failed to do the Git setup"
+bash_alias || (echo "bash_alias job failed and exited" && exit 1)
+ssh_key || (echo "ssh_key job failed and exited" && exit 1)
+kubeconfig || (echo "kubeconfig job failed exited" && exit 1)
+git_setup || echo "git_setup job failed and continued"
