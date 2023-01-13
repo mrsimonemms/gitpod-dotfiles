@@ -28,12 +28,14 @@ function git_setup() {
     git config --global commit.gpgsign true
   fi
 
-  # @link https://github.com/so-fancy/diff-so-fancy
-  # This may legitimately fail
-  echo "Git: Installing Diff So Fancy"
-  npm install -g diff-so-fancy
-  git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
-  git config --global interactive.diffFilter "diff-so-fancy --patch"
+  if command npm; then
+    # @link https://github.com/so-fancy/diff-so-fancy
+    # This may legitimately fail
+    echo "Git: Installing Diff So Fancy"
+    npm install -g diff-so-fancy
+    git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
+    git config --global interactive.diffFilter "diff-so-fancy --patch"
+  fi
 }
 
 function kubeconfig() {
