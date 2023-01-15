@@ -50,7 +50,7 @@ function git_setup() {
     git config --global commit.gpgsign true
   fi
 
-  if command npm; then
+  if command -v npm; then
     # @link https://github.com/so-fancy/diff-so-fancy
     # This may legitimately fail
     echo "Git: Installing Diff So Fancy"
