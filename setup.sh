@@ -8,6 +8,28 @@ function bash_alias() {
   cp "${HOME}/.dotfiles/.bash_aliases" "${HOME}/.bash_aliases"
 }
 
+function docker_config_setup() {
+  if [ -n "${DOCKER_CONFIG_BASE64-}" ]; then
+    echo "Setting up Docker registries"
+
+    mkdir -p "${HOME}/.docker"
+
+    DOCKER_CONFIG="${HOME}/.docker/config.json"
+
+    if [ -f "${DOCKER_CONFIG}" ]; then
+      echo "Merging Docker config files"
+
+      mv "${DOCKER_CONFIG}" "${DOCKER_CONFIG}.old"
+      echo "${DOCKER_CONFIG_BASE64}" | base64 -d > "${DOCKER_CONFIG}.new"
+
+      jq -s '.[0] * .[1]' "${DOCKER_CONFIG}.old" "${DOCKER_CONFIG}.new" > "${DOCKER_CONFIG}"
+    else
+      echo "Creating Docker config file"
+      echo "${DOCKER_CONFIG_BASE64}" | base64 -d > "${DOCKER_CONFIG}"
+    fi
+  fi
+}
+
 function git_setup() {
   echo "Setting up Git"
 
@@ -76,5 +98,6 @@ function ssh_key() {
 
 bash_alias || (echo "bash_alias job failed and exited" && exit 1)
 ssh_key || (echo "ssh_key job failed and exited" && exit 1)
-kubeconfig || (echo "kubeconfig job failed exited" && exit 1)
+kubeconfig || (echo "kubeconfig job failed and exited" && exit 1)
+docker_config_setup || (echo "docker_config_setup failed and exited" && exit 1)
 git_setup || echo "git_setup job failed and continued"
