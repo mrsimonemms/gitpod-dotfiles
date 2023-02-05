@@ -39,6 +39,8 @@ function git_setup() {
   git config --global alias.ci commit
   git config --global alias.st status
 
+  git config --global push.autoSetupRemote true
+
   echo "Git: Use rebase to pull"
   git config --global pull.rebase true
 
