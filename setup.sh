@@ -50,6 +50,7 @@ function git_setup() {
     echo 'pinentry-mode loopback' >> ~/.gnupg/gpg.conf
     git config --global user.signingkey "${GPG_SIGNING_KEY}"
     git config --global commit.gpgsign true
+    git config --global tag.gpgsign true
   fi
 
   if command -v npm; then
