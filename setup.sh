@@ -2,19 +2,6 @@
 
 set -euo pipefail
 
-function atuin() {
-  echo "Installing Atuin to sync bash history"
-
-  if [ -n "${ATUIN_USERNAME:-}" ] && [ -n "${ATUIN_PASSWORD:-}" ] && [ -n "${ATUIN_KEY:-}" ]; then
-    bash <(curl https://raw.githubusercontent.com/ellie/atuin/main/install.sh)
-    atuin login \
-      -u "${ATUIN_USERNAME}" \
-      -p "${ATUIN_PASSWORD}" \
-      -k "${ATUIN_KEY}"
-    atuin sync
-  fi
-}
-
 function bash_alias() {
   echo "Setting up bash_alias"
 
@@ -112,7 +99,6 @@ function ssh_key() {
   fi
 }
 
-atuin || (echo "Atuin job failed and exited" && exit 1)
 bash_alias || (echo "bash_alias job failed and exited" && exit 1)
 ssh_key || (echo "ssh_key job failed and exited" && exit 1)
 kubeconfig || (echo "kubeconfig job failed and exited" && exit 1)
