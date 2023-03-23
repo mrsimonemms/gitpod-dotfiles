@@ -9,7 +9,7 @@ function bash_alias() {
 }
 
 function docker_config_setup() {
-  if [ -n "${DOCKER_CONFIG_BASE64-}" ]; then
+  if [ -n "${DOCKER_CONFIG_BASE64:-}" ]; then
     echo "Setting up Docker registries"
 
     mkdir -p "${HOME}/.docker"
@@ -44,7 +44,7 @@ function git_setup() {
   echo "Git: Use rebase to pull"
   git config --global pull.rebase true
 
-  if [ -n "${GPG_PRIVATE_KEY_BASE64-}" ]; then
+  if [ -n "${GPG_PRIVATE_KEY_BASE64:-}" ]; then
     echo "Git: Installing GPG key"
     gpg --verbose --batch --import <(echo "${GPG_PRIVATE_KEY_BASE64}" | base64 -d)
     echo 'pinentry-mode loopback' >> ~/.gnupg/gpg.conf
@@ -66,7 +66,7 @@ function git_setup() {
 function kubeconfig() {
   echo "Looking for a KUBECONFIG_BASE64 envvar"
 
-  if [ -n "${KUBECONFIG_BASE64-}" ]; then
+  if [ -n "${KUBECONFIG_BASE64:-}" ]; then
     echo "KUBECONFIG_BASE64 envvar found"
 
     KUBECONFIG="${HOME}/.kube/config"
@@ -84,14 +84,14 @@ function ssh_key() {
 
   mkdir -p "${HOME}/.ssh"
 
-  if [ -n "${SSH_PRIVATE_KEY_BASE64-}" ]; then
+  if [ -n "${SSH_PRIVATE_KEY_BASE64:-}" ]; then
     echo "SSH_PRIVATE_KEY_BASE64 envvar found"
 
     echo "${SSH_PRIVATE_KEY_BASE64}" | base64 -d > "${HOME}/.ssh/id_rsa"
     chmod 600 "${HOME}/.ssh/id_rsa"
   fi
 
-  if [ -n "${SSH_PUBLIC_KEY_BASE64-}" ]; then
+  if [ -n "${SSH_PUBLIC_KEY_BASE64:-}" ]; then
     echo "SSH_PUBLIC_KEY_BASE64 envvar found"
 
     echo "${SSH_PUBLIC_KEY_BASE64}" | base64 -d > "${HOME}/.ssh/id_rsa.pub"
