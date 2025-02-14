@@ -79,6 +79,17 @@ function kubeconfig() {
   fi
 }
 
+function pre_commit_setup() {
+  echo "Setting up pre-commit"
+
+  pip3 install cruft cookiecutter pre-commit
+  # Cruft has no version command
+  cookiecutter --version
+  pre-commit --version
+
+  pre-commit install --install-hooks -t pre-commit -t commit-msg --allow-missing-config
+}
+
 function ssh_key() {
   echo "Looking for a SSH_PRIVATE_KEY_BASE64 envvar"
 
@@ -104,3 +115,4 @@ ssh_key || (echo "ssh_key job failed and exited" && exit 1)
 kubeconfig || (echo "kubeconfig job failed and exited" && exit 1)
 docker_config_setup || (echo "docker_config_setup failed and exited" && exit 1)
 git_setup || echo "git_setup job failed and continued"
+pre_commit_setup || echo "pre-commit failed and continued"
